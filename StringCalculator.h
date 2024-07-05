@@ -4,6 +4,7 @@ int add(const char* input){
     {
    return 0;
     }
+    return -1;
 }
 
 int isEmptyString(const char *str) {
