@@ -4,12 +4,19 @@
 int add(const char* input) {
     int sum = 0;
     char* token = strtok((char*)input, ",\n");
+    char delimiter = ',';
+    int customDelimiterFound = 0;
+    if (input[0] == '/' && input[1] == '/') {
+        customDelimiterFound = 1;
+        delimiter = input[2];
+        input += 4;
+    }
     while (token != NULL) {
         int num = atoi(token);
         if (num <= 1000) {
             sum += num;
         }
-        token = strtok(NULL, ",\n");
+        token = strtok(NULL, customDelimiterFound ? &delimiter : ",\n");
     }
     return sum;
 }
@@ -42,8 +49,10 @@ int main() {
     result = add(input5);
     printf("Test case 5: IgnoreNumbersGreaterThan1000 - Result: %d, Expected: 1\n", result);
 
+    // Test case 6: ExpectSumWithCustomDelimiter
+    const char* input6 = "//;\n1;2";
+    result = add(input6);
+    printf("Test case 6: ExpectSumWithCustomDelimiter - Result: %d, Expected: 3\n", result);
+
     return 0;
 }
-
-
-
