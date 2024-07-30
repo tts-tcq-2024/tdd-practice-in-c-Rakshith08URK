@@ -1,58 +1,52 @@
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
+#define MAX_INPUT_SIZE 1024
 
 int add(const char* input) {
     int sum = 0;
-    char* token = strtok((char*)input, ",\n");
-    char delimiter = ',';
-    int customDelimiterFound = 0;
-    if (input[0] == '/' && input[1] == '/') {
-        customDelimiterFound = 1;
-        delimiter = input[2];
-        input += 4;
-    }
-    while (token != NULL) {
-        int num = atoi(token);
-        if (num <= 1000) {
-            sum += num;
+    int num1 = 0, num2 = 0;
+
+    char* delimiter = strchr(input, ',');
+    if (!delimiter) { // only one number
+        for (char* p = input; *p; p++) {
+            int digit = 0;
+            while (isdigit(*p)) {
+                digit = digit * 10 + *p++ - '0';
+            }
+            if (p == input ||!isdigit(*p)) {
+                return 0;
+            }
+            num1 = digit;
+            input = p;
         }
-        token = strtok(NULL, customDelimiterFound ? &delimiter : ",\n");
+        sum = num1;
+    } else { // two numbers
+        for (char* p = input; *p; p++) {
+            int digit = 0;
+            while (isdigit(*p)) {
+                digit = digit * 10 + *p++ - '0';
+            }
+            if (p == input ||!isdigit(*p)) {
+                return 0;
+            }
+            if (num1 == 0) {
+                num1 = digit;
+            } else {
+                num2 = digit;
+                sum = num1 + num2;
+                break;
+            }
+            input = p;
+        }
     }
+
     return sum;
 }
 
-int main() {
-    int result;
 
-    // Test case 1: ExpectZeroForEmptyInput
-    const char* input1 = "Hello, world!";
-    result = add(input1);
-    printf("Test case 1: ExpectZeroForEmptyInput - Result: %d, Expected: 0\n", result);
-
-    // Test case 2: ExpectZeroForSingleZero
-    const char* input2 = "0";
-    result = add(input2);
-    printf("Test case 2: ExpectZeroForSingleZero - Result: %d, Expected: 0\n", result);
-
-    // Test case 3: ExpectSumForTwoNumbers
-    const char* input3 = "1,2";
-    result = add(input3);
-    printf("Test case 3: ExpectSumForTwoNumbers - Result: %d, Expected: 3\n", result);
-
-    // Test case 4: ExpectSumWithNewlineDelimiter
-    const char* input4 = "1\n2,3";
-    result = add(input4);
-    printf("Test case 4: ExpectSumWithNewlineDelimiter - Result: %d, Expected: 6\n", result);
-
-    // Test case 5: IgnoreNumbersGreaterThan1000
-    const char* input5 = "1,1001";
-    result = add(input5);
-    printf("Test case 5: IgnoreNumbersGreaterThan1000 - Result: %d, Expected: 1\n", result);
-
-    // Test case 6: ExpectSumWithCustomDelimiter
-    const char* input6 = "//;\n1;2";
-    result = add(input6);
-    printf("Test case 6: ExpectSumWithCustomDelimiter - Result: %d, Expected: 3\n", result);
-
-    return 0;
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
