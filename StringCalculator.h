@@ -8,9 +8,9 @@ int add(const char* input) {
     int sum = 0;
     int num1 = 0, num2 = 0;
 
-    char* delimiter = strchr(input, ',');
+    const char* delimiter = strchr(input, ',');
     if (!delimiter) { // only one number
-        for (char* p = input; *p; p++) {
+        for (const char* p = input; *p; p++) {
             int digit = 0;
             while (isdigit(*p)) {
                 digit = digit * 10 + *p++ - '0';
@@ -23,7 +23,7 @@ int add(const char* input) {
         }
         sum = num1;
     } else { // two numbers
-        for (char* p = input; *p; p++) {
+        for (const char* p = input; *p; p++) {
             int digit = 0;
             while (isdigit(*p)) {
                 digit = digit * 10 + *p++ - '0';
